@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="13022026-1616" author="Takudzwa Nhema">
+        <sql>
+            CREATE  DATABASE IF NOT EXISTS client
+        </sql>
+    </changeSet>
+
+    <changeSet id="13022026-1621" author="Takudzwa Nhema">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="patient" catalogName="client" schemaName="client"/>
+            </not>
+        </preConditions>
+
+        <createTable  catalogName="client" schemaName="client" tableName="patient">
+            <column name="patient_id" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="patient_name" type="VARCHAR(50)">
+                <constraints nullable="false" unique="false"/>
+            </column>
+
+            <column name="gender" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="facility_id" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="birth_date" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

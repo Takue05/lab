@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: lims
+
+  datasource:
+    url: jdbc:mysql://localhost:3307/mrs?useSSL=false&serverTimezone=UTC
+    username: root
+    password:
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+
+
+axon:
+  axonserver:
+    enabled: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.axonframework: INFO
+    com.takue.lims: DEBUG
+    org.hibernate.SQL: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"

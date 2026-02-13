@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="10022026-1316" author="Takudzwa Nhema">
+            <sql>
+                CREATE  DATABASE IF NOT EXISTS consultation
+            </sql>
+    </changeSet>
+
+    <changeSet id="10022026-1321" author="Takudzwa Nhema">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+            <tableExists tableName="sample" catalogName="consultation" schemaName="consultation"/>
+            </not>
+        </preConditions>
+
+        <createTable  catalogName="consultation" schemaName="consultation" tableName="sample">
+        <column name="sample_id" type="VARCHAR(50)">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+
+        <column name="lab_request_number" type="VARCHAR(50)">
+            <constraints nullable="false" unique="false"/>
+        </column>
+
+        <column name="patient_id" type="VARCHAR(50)">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="collection_date" type="TIMESTAMP">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="received_date_time" type="TIMESTAMP"/>
+
+        <column name="sample_type" type="VARCHAR(50)">
+            <constraints nullable="false"/>
+        </column>
+
+            <column name="test_code" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+        <column name="status" type="VARCHAR(30)">
+            <constraints nullable="false"/>
+        </column>
+
+        <column name="rejection_reason" type="VARCHAR(255)"/>
+
+        <column name="priority" type="VARCHAR(20)">
+            <constraints nullable="false"/>
+        </column>
+        </createTable>
+
+    </changeSet>
+
+
+
+</databaseChangeLog>

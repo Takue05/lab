@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <!-- Create schema for Axon events -->
+    <changeSet id="10022026-1400" author="Takudzwa Nhema">
+
+        <sql>CREATE SCHEMA IF NOT EXISTS mrs</sql>
+        <rollback>DROP SCHEMA mrs CASCADE</rollback>
+    </changeSet>
+
+    <!-- Domain Event Entry Table - stores all domain events -->
+    <changeSet id="10022026-1401" author="Takudzwa Nhema">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="domain_event_entry" catalogName="mrs" schemaName="mrs"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="mrs" tableName="domain_event_entry">
+            <!-- Unique identifier for this event -->
+            <column name="global_index" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <!-- Event identifier (UUID) -->
+            <column name="event_identifier" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+
+            <!-- Aggregate identifier (which entity this event belongs to) -->
+            <column name="aggregate_identifier" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Sequence number within the aggregate (0, 1, 2, 3...) -->
+            <column name="sequence_number" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Type of aggregate (e.g., "OrderAggregate") -->
+            <column name="type" type="varchar(255)"/>
+
+            <!-- Timestamp when event occurred -->
+            <column name="time_stamp" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Actual event payload (JSON or serialized) -->
+            <column name="payload" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Metadata about the event -->
+            <column name="meta_data" type="BLOB"/>
+
+            <!-- Type of the event payload (Java class name) -->
+            <column name="payload_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <!-- Revision of the payload type -->
+            <column name="payload_revision" type="varchar(255)"/>
+        </createTable>
+
+        <!-- Unique constraint: each aggregate can't have duplicate sequence numbers -->
+        <addUniqueConstraint
+                schemaName="mrs"
+                tableName="domain_event_entry"
+                columnNames="aggregate_identifier, sequence_number"
+                constraintName="uk_domain_event_aggregate_seq"/>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="domain_event_entry"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Snapshot Event Entry Table - stores aggregate snapshots -->
+    <changeSet id="10022026-1402" author="Takudzwa Nhema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="snapshot_event_entry" catalogName="mrs" schemaName="mrs"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="mrs" tableName="snapshot_event_entry">
+            <column name="aggregate_identifier" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sequence_number" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload" type="BLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meta_data" type="BLOB"/>
+            <column name="payload_type" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payload_revision" type="varchar(255)"/>
+        </createTable>
+
+        <addPrimaryKey
+                schemaName="mrs"
+                tableName="snapshot_event_entry"
+                columnNames="aggregate_identifier, sequence_number"
+                constraintName="pk_snapshot_event_entry"/>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="snapshot_event_entry"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Association Value Entry - for Saga pattern -->
+    <changeSet id="10022026-1403" author="Takudzwa Nhema">
+
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="association_value_entry" catalogName="mrs" schemaName="mrs"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="mrs" tableName="association_value_entry">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="association_key" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="association_value" type="varchar(255)"/>
+            <column name="saga_id" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="saga_type" type="varchar(255)"/>
+        </createTable>
+
+        <createIndex
+                schemaName="mrs"
+                tableName="association_value_entry"
+                indexName="idx_association_saga">
+            <column name="saga_id"/>
+            <column name="saga_type"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="association_value_entry"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Saga Entry Table -->
+    <changeSet id="10022026-1404" author="Takudzwa Nhema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="saga_entry" catalogName="mrs" schemaName="mrs"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="mrs" tableName="saga_entry">
+            <column name="saga_id" type="varchar(255)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="revision" type="varchar(255)"/>
+            <column name="saga_type" type="varchar(255)"/>
+            <column name="serialized_saga" type="BLOB"/>
+        </createTable>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="saga_entry"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Token Entry - for tracking event processors -->
+    <changeSet id="10022026-1405" author="Takudzwa Nhema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="token_entry" catalogName="mrs" schemaName="mrs"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="mrs" tableName="token_entry">
+            <column name="processor_name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="segment" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="BLOB"/>
+            <column name="token_type" type="varchar(255)"/>
+            <column name="timestamp" type="varchar(255)"/>
+            <column name="owner" type="varchar(255)"/>
+        </createTable>
+
+        <addPrimaryKey
+                schemaName="mrs"
+                tableName="token_entry"
+                columnNames="processor_name, segment"
+                constraintName="pk_token_entry"/>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="token_entry"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="10022026-1406" author="Takudzwa Nhema">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="domain_event_entry_seq" schemaName="mrs"/>
+            </not>
+        </preConditions>
+
+        <createTable schemaName="mrs" tableName="domain_event_entry_seq">
+            <column name="next_val" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <insert schemaName="mrs" tableName="domain_event_entry_seq">
+            <column name="next_val" valueNumeric="1"/>
+        </insert>
+
+        <rollback>
+            <dropTable schemaName="mrs" tableName="domain_event_entry_seq"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
