@@ -1,9 +1,6 @@
 package com.takue.lab.common.event;
 
-import com.takue.lab.enums.Gender;
-import com.takue.lab.enums.Priority;
-import com.takue.lab.enums.SampleStatus;
-import lombok.Data;
+
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -19,7 +16,7 @@ public class NewSampleRegisteredEvent {
     LocalDateTime receivedDateTime;
     String sampleType;
     String testCode;
-    SampleStatus sampleStatus;
+    String sampleStatus;
     String rejectionReason;
-    Priority priority;
+    String priority;
 }

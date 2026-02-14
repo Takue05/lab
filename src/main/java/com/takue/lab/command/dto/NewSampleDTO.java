@@ -18,7 +18,7 @@ public class NewSampleDTO {
     LocalDateTime receivedDateTime;
     String sampleType;
     String testCode;
-    SampleStatus sampleStatus;
+    String sampleStatus;
     String rejectionReason;
-    Priority priority;
+    String priority;
 }

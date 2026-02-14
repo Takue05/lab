@@ -1,8 +1,5 @@
 package com.takue.lab.command.command;
 
-import com.takue.lab.enums.Gender;
-import com.takue.lab.enums.Priority;
-import com.takue.lab.enums.SampleStatus;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -13,7 +10,7 @@ import java.util.UUID;
 public class RegisterNewPatient {
     String patientId;
     String  patientName;
-    Gender gender;
+    String gender;
     LocalDate birthDate;
     String facilityId;
 }

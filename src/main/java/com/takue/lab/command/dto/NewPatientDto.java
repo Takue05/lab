@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Value
 public class NewPatientDto {
     String  patientName;
-    Gender gender;
+    String gender;
     LocalDate birthDate;
     String facilityId;
 }

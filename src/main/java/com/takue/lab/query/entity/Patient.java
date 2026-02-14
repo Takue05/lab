@@ -19,7 +19,7 @@ public class Patient {
     @Id
     String patientId;
     String  patientName;
-    Gender gender;
+    String gender;
     String facilityId;
     LocalDate birthDate;
 

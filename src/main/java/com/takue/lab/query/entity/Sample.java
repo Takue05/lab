@@ -24,11 +24,9 @@ public class Sample {
     private  String sampleType;
     private  String testCode;
 
-    @Enumerated(EnumType.STRING)
-    private SampleStatus status;
+    private String status;
 
     private String rejectionReason;
 
-    @Enumerated(EnumType.STRING)
-    private Priority priority;
+    private String priority;
 }

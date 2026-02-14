@@ -2,9 +2,6 @@ package com.takue.lab.command.aggregate;
 
 import com.takue.lab.command.command.RegisterNewSample;
 import com.takue.lab.common.event.NewSampleRegisteredEvent;
-import com.takue.lab.enums.Gender;
-import com.takue.lab.enums.Priority;
-import com.takue.lab.enums.SampleStatus;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.axonframework.commandhandling.CommandHandler;
@@ -32,7 +29,7 @@ public class SampleAggregate {
 
     @CommandHandler
     public SampleAggregate(RegisterNewSample command) {
-        log.debug("RegisterNewSample command received for sampleId: {}", command.getSampleId());
+        log.info("RegisterNewSample command received for sampleId: {}", command.getSampleId().toString());
 
         apply(new NewSampleRegisteredEvent(
                 command.getSampleId(),

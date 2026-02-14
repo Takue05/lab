@@ -9,7 +9,7 @@ import java.time.LocalDate;
 public class NewPatientRegisteredEvent {
     String patientId;
     String  patientName;
-    Gender gender;
+    String gender;
     LocalDate birthDate;
     String facilityId;
 }

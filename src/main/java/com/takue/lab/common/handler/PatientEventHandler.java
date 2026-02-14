@@ -21,7 +21,7 @@ public class PatientEventHandler {
         patient.setPatientId(event.getPatientId());
         patient.setPatientName(event.getPatientName());
         patient.setBirthDate(event.getBirthDate());
-        patient.setGender(event.getGender());
+        patient.setGender(event.getGender().toString());
         patient.setFacilityId(event.getFacilityId());
 
         patientRepository.save(patient);
